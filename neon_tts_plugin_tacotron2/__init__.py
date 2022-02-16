@@ -37,6 +37,10 @@ except ImportError:
     from ovos_plugin_manager.templates.tts import TTS, TTSValidator
 from neon_utils.metrics_utils import Stopwatch
 
+from tensorflow_tts.inference import TFAutoModel
+from tensorflow_tts.inference import AutoProcessor
+import soundfile as sf
+
 
 class Tacotron2TTS(TTS):
     langs = {
@@ -55,7 +59,7 @@ class Tacotron2TTS(TTS):
         super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
                                           audio_ext="wav",
                                           ssml_tags=["speak"])
-        # TODO: Optionally define any class parameters
+        self._init_model()
 
     def get_tts(self, sentence: str, output_file: str, speaker: Optional[dict] = None):
         stopwatch = Stopwatch()
@@ -82,6 +86,21 @@ class Tacotron2TTS(TTS):
             LOG.debug(f"TTS Synthesis time={stopwatch.time}")
 
         return output_file, None
+
+    def _init_model(self):
+        langParams = self.langs[self.lang]
+        mevName = langParams["mel"]
+        vocoderName = langParams["vocoder"]
+
+        # initialize tacotron2 model.
+        self.model = TFAutoModel.from_pretrained(mevName)
+
+        # initialize vocoder
+        self.vocoder = TFAutoModel.from_pretrained(vocoderName)
+
+        # processor
+        self.text_processor = AutoProcessor.from_pretrained(mevName)
+
 
 
 class Tacotron2TTSValidator(TTSValidator):
