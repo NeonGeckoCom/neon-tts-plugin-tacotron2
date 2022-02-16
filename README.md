@@ -1,6 +1,6 @@
-# NeonAI Template TTS Plugin  # TODO: Name
+# NeonAI Tacotron2 TTS Plugin
 [Mycroft](https://mycroft-ai.gitbook.io/docs/mycroft-technologies/mycroft-core/plugins) compatible
-TTS Plugin for Template Text-to-Speech.  # TODO: Update Name
+Mycroft compatible TTS Plugin for Tacotron2 Text-to-Speech.
 
 # Configuration:
 ```yaml
