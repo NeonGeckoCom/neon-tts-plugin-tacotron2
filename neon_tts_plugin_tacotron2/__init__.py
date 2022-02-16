@@ -78,8 +78,8 @@ class Tacotron2TTSValidator(TTSValidator):
         super(Tacotron2TTSValidator, self).__init__(tts)
 
     def validate_lang(self):
-        # TODO: Add some validation of `self.lang` default language
-        pass
+        if (self.lang not in self.langs):
+            raise KeyError("Language isn't supported")
 
     def validate_dependencies(self):
         # TODO: Optionally check dependencies or raise
