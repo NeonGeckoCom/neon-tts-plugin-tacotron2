@@ -42,8 +42,8 @@ class Tacotron2TTS(TTS):
     def __init__(self, lang="en-us", config=None):
         config = config or get_neon_tts_config().get("tacotron2", {})
         super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
-                                          audio_ext="mp3",  # TODO: Specify output audio format
-                                          ssml_tags=["speak"])  # TODO: Specify valid SSML tags
+                                          audio_ext="wav",
+                                          ssml_tags=["speak"])
         # TODO: Optionally define any class parameters
 
     def get_tts(self, sentence: str, output_file: str, speaker: Optional[dict] = None):
