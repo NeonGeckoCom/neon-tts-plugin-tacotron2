@@ -64,10 +64,10 @@ with open("./version.py", "r", encoding="utf-8") as v:
 setup(
     name='neon-tts-plugin-tacotron2',
     version=version,
-    description='A TTS plugin for Neon',  # TODO: Add engine/framework name
+    description='A TensorFlowTTS Tacotron2 plugin for Neon',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/NeonGeckoCom/template-neon-tts-plugin',  # TODO: Update link
+    url='https://github.com/NeonGeckoCom/neon-tts-plugin-tacotron2',
     author='Neongecko',
     author_email='developers@neon.ai',
     license='BSD-3.0',
