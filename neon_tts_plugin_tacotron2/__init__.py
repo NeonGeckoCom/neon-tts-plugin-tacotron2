@@ -39,6 +39,17 @@ from neon_utils.metrics_utils import Stopwatch
 
 
 class Tacotron2TTS(TTS):
+    langs = {
+        "en-us": {
+            "mel": "tensorspeech/tts-tacotron2-ljspeech-en", 
+            "vocoder": "tensorspeech/tts-mb_melgan-ljspeech-en"
+        },
+        "pl-pl": {
+            "mel": "NeonBohdan/tts-tacotron2-ljspeech-pl", 
+            "vocoder": "tensorspeech/tts-mb_melgan-ljspeech-en"
+        }
+    }
+
     def __init__(self, lang="en-us", config=None):
         config = config or get_neon_tts_config().get("tacotron2", {})
         super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
