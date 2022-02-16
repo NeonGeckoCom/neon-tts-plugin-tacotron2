@@ -40,7 +40,7 @@ from neon_utils.metrics_utils import Stopwatch
 
 class Tacotron2TTS(TTS):
     def __init__(self, lang="en-us", config=None):
-        config = config or get_neon_tts_config().get("tts_module_name", {})  # TODO: Update name
+        config = config or get_neon_tts_config().get("tacotron2", {})
         super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
                                           audio_ext="mp3",  # TODO: Specify output audio format
                                           ssml_tags=["speak"])  # TODO: Specify valid SSML tags

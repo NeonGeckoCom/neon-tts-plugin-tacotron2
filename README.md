@@ -3,9 +3,8 @@
 TTS Plugin for Template Text-to-Speech.  # TODO: Update Name
 
 # Configuration:
-# TODO: Specify any optional or required configuration values
 ```yaml
 tts:
-    module: tts_module_name  # TODO: Unique Entry Point Name
-    tts_module_name: {}  # TODO: Any module config
+    module: tacotron2
+    tacotron2: {}  # TODO: Any module config
 ```
