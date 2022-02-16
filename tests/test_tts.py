@@ -33,12 +33,12 @@ from pprint import pprint
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "res"))
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from neon_tts_plugin_TODO_NAME import TemplateTTS  # TODO: Update Import
+from neon_tts_plugin_TODO_NAME import Tacotron2TTS  # TODO: Update Import
 
 
 class TestTTS(unittest.TestCase):
     def setUp(self) -> None:
-        self.tts = TemplateTTS()
+        self.tts = Tacotron2TTS()
 
     def doCleanups(self) -> None:
         try:

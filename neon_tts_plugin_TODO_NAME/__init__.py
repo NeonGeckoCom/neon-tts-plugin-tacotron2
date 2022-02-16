@@ -38,10 +38,10 @@ except ImportError:
 from neon_utils.metrics_utils import Stopwatch
 
 
-class TemplateTTS(TTS):  # TODO: Replace 'Template' with TTS name
+class Tacotron2TTS(TTS):
     def __init__(self, lang="en-us", config=None):
         config = config or get_neon_tts_config().get("tts_module_name", {})  # TODO: Update name
-        super(TemplateTTS, self).__init__(lang, config, TemplateTTSValidator(self),
+        super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
                                           audio_ext="mp3",  # TODO: Specify output audio format
                                           ssml_tags=["speak"])  # TODO: Specify valid SSML tags
         # TODO: Optionally define any class parameters
@@ -73,9 +73,9 @@ class TemplateTTS(TTS):  # TODO: Replace 'Template' with TTS name
         return output_file, None
 
 
-class TemplateTTSValidator(TTSValidator):  # TODO: Replace 'Template' with TTS name
+class Tacotron2TTSValidator(TTSValidator):
     def __init__(self, tts):
-        super(TemplateTTSValidator, self).__init__(tts)
+        super(Tacotron2TTSValidator, self).__init__(tts)
 
     def validate_lang(self):
         # TODO: Add some validation of `self.lang` default language
@@ -90,4 +90,4 @@ class TemplateTTSValidator(TTSValidator):  # TODO: Replace 'Template' with TTS n
         pass
 
     def get_tts_class(self):
-        return TemplateTTS
+        return Tacotron2TTS
