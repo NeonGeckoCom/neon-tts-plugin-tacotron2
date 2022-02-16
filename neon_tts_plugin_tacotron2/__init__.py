@@ -80,8 +80,7 @@ class Tacotron2TTS(TTS):
         LOG.debug(to_speak)
         if to_speak:
             with stopwatch:
-                pass
-                # TODO: Get TTS audio here
+                self._run_model(sentence = sentence, output_file = output_file)
 
             LOG.debug(f"TTS Synthesis time={stopwatch.time}")
 
@@ -100,6 +99,21 @@ class Tacotron2TTS(TTS):
 
         # processor
         self.text_processor = AutoProcessor.from_pretrained(mevName)
+
+    def _run_model(self, sentence: str, output_file: str):
+        input_ids = self.text_processor.text_to_sequence(sentence)
+        
+        decoder_output, mel_outputs, stop_token_prediction, alignment_history = self.model.inference(
+            input_ids=[input_ids],
+            input_lengths=[len(input_ids)],
+            speaker_ids=[0],
+        )
+
+        # vocoder inference
+        audio = self.vocoder.inference(mel_outputs)[0, :, 0]
+
+        # save to file
+        sf.write(output_file, audio, 22050, "PCM_16")
 
 
 
