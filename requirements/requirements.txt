@@ -5,7 +5,7 @@ python-dateutil==2.6.0
 matplotlib==3.3.4
 # TensorFlowTTS
 TensorFlowTTS==1.8
-git+https://github.com/repodiac/german_transliterate.git#egg=german_transliterate
+german_transliterate @ git+https://github.com/repodiac/german_transliterate.git#egg=german_transliterate
 keras==2.6.0
 numpy~=1.19.2
 h5py~=3.1.0
