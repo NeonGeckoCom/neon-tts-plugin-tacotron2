@@ -8,3 +8,7 @@ tts:
     module: tacotron2
     tacotron2: {}  # TODO: Any module config
 ```
+# Requirements:
+`sudo apt install libsndfile1`
+
+Necessary for recording audio files
