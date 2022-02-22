@@ -25,16 +25,18 @@ jobs:
   unit_tests:
     strategy:
       matrix:
-        python-version: [ 3.6, 3.7, 3.8, 3.9 ]
+        python-version: [ 3.6, 3.7, 3.8 ]
+        # TODO : return 3.9 version when it will be compatible
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up python ${{ matrix.python-version }
+      - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          sudo apt-get install libsndfile1
           python -m pip install --upgrade pip
           pip install -r requirements/requirements.txt -r requirements/test_requirements.txt
       - name: Test TTS
@@ -43,6 +45,6 @@ jobs:
       - name: Upload TTS test results
         uses: actions/upload-artifact@v2
         with:
-          name: pytest-results-${{ matrix.python-version }
+          name: pytest-results-${{ matrix.python-version }}
           path: tests/tts-test-results.xml
         if: ${{ always() }}

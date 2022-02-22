@@ -37,14 +37,29 @@ except ImportError:
     from ovos_plugin_manager.templates.tts import TTS, TTSValidator
 from neon_utils.metrics_utils import Stopwatch
 
+from tensorflow_tts.inference import TFAutoModel
+from tensorflow_tts.inference import AutoProcessor
+import soundfile as sf
 
-class TemplateTTS(TTS):  # TODO: Replace 'Template' with TTS name
+
+class Tacotron2TTS(TTS):
+    langs = {
+        "en-us": {
+            "mel": "tensorspeech/tts-tacotron2-ljspeech-en", 
+            "vocoder": "tensorspeech/tts-mb_melgan-ljspeech-en"
+        },
+        "pl-pl": {
+            "mel": "NeonBohdan/tts-tacotron2-ljspeech-pl", 
+            "vocoder": "tensorspeech/tts-mb_melgan-ljspeech-en"
+        }
+    }
+
     def __init__(self, lang="en-us", config=None):
-        config = config or get_neon_tts_config().get("tts_module_name", {})  # TODO: Update name
-        super(TemplateTTS, self).__init__(lang, config, TemplateTTSValidator(self),
-                                          audio_ext="mp3",  # TODO: Specify output audio format
-                                          ssml_tags=["speak"])  # TODO: Specify valid SSML tags
-        # TODO: Optionally define any class parameters
+        config = config or get_neon_tts_config().get("tacotron2", {})
+        super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
+                                          audio_ext="wav",
+                                          ssml_tags=["speak"])
+        self._init_model()
 
     def get_tts(self, sentence: str, output_file: str, speaker: Optional[dict] = None):
         stopwatch = Stopwatch()
@@ -65,21 +80,50 @@ class TemplateTTS(TTS):  # TODO: Replace 'Template' with TTS name
         LOG.debug(to_speak)
         if to_speak:
             with stopwatch:
-                pass
-                # TODO: Get TTS audio here
+                self._run_model(sentence = sentence, output_file = output_file)
 
             LOG.debug(f"TTS Synthesis time={stopwatch.time}")
 
         return output_file, None
 
+    def _init_model(self):
+        langParams = self.langs[self.lang]
+        mevName = langParams["mel"]
+        vocoderName = langParams["vocoder"]
 
-class TemplateTTSValidator(TTSValidator):  # TODO: Replace 'Template' with TTS name
+        # initialize tacotron2 model.
+        self.model = TFAutoModel.from_pretrained(mevName)
+
+        # initialize vocoder
+        self.vocoder = TFAutoModel.from_pretrained(vocoderName)
+
+        # processor
+        self.text_processor = AutoProcessor.from_pretrained(mevName)
+
+    def _run_model(self, sentence: str, output_file: str):
+        input_ids = self.text_processor.text_to_sequence(sentence)
+        
+        decoder_output, mel_outputs, stop_token_prediction, alignment_history = self.model.inference(
+            input_ids=[input_ids],
+            input_lengths=[len(input_ids)],
+            speaker_ids=[0],
+        )
+
+        # vocoder inference
+        audio = self.vocoder.inference(mel_outputs)[0, :, 0]
+
+        # save to file
+        sf.write(output_file, audio, 22050, "PCM_16")
+
+
+
+class Tacotron2TTSValidator(TTSValidator):
     def __init__(self, tts):
-        super(TemplateTTSValidator, self).__init__(tts)
+        super(Tacotron2TTSValidator, self).__init__(tts)
 
     def validate_lang(self):
-        # TODO: Add some validation of `self.lang` default language
-        pass
+        if (self.lang not in self.langs):
+            raise KeyError("Language isn't supported")
 
     def validate_dependencies(self):
         # TODO: Optionally check dependencies or raise
@@ -90,4 +134,4 @@ class TemplateTTSValidator(TTSValidator):  # TODO: Replace 'Template' with TTS n
         pass
 
     def get_tts_class(self):
-        return TemplateTTS
+        return Tacotron2TTS
