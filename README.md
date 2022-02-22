@@ -1,11 +1,14 @@
-# NeonAI Template TTS Plugin  # TODO: Name
+# NeonAI Tacotron2 TTS Plugin
 [Mycroft](https://mycroft-ai.gitbook.io/docs/mycroft-technologies/mycroft-core/plugins) compatible
-TTS Plugin for Template Text-to-Speech.  # TODO: Update Name
+Mycroft compatible TTS Plugin for Tacotron2 Text-to-Speech.
 
 # Configuration:
-# TODO: Specify any optional or required configuration values
 ```yaml
 tts:
-    module: tts_module_name  # TODO: Unique Entry Point Name
-    tts_module_name: {}  # TODO: Any module config
+    module: tacotron2
+    tacotron2: {}  # TODO: Any module config
 ```
+# Requirements:
+`sudo apt install libsndfile1`
+
+Necessary for recording audio files
