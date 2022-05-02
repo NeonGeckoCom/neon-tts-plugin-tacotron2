@@ -48,7 +48,7 @@ def get_requirements(requirements_filename: str):
     return requirements
 
 
-PLUGIN_ENTRY_POINT = 'tacotron2 = neon_tts_plugin_tacotron2:Tacotron2TTS'
+PLUGIN_ENTRY_POINT = 'neon-tts-plugin-tacotron2 = neon_tts_plugin_tacotron2:Tacotron2TTS'
 
 with open("README.md", "r") as f:
     long_description = f.read()

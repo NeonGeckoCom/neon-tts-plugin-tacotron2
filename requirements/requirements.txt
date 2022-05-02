@@ -1,14 +1,13 @@
 # version fix
-six==1.15.0
-PyYAML==5.4
-python-dateutil==2.6.0
-matplotlib==3.3.4
+six~=1.15.0
+PyYAML~=5.4
+python-dateutil~=2.6.0
+matplotlib~=3.3.4
 # TensorFlowTTS
-TensorFlowTTS==1.8
+TensorFlowTTS~=1.8
 german_transliterate @ git+https://github.com/repodiac/german_transliterate.git#egg=german_transliterate
-keras==2.6.0
+keras~=2.6.0
 numpy~=1.19.2
 h5py~=3.1.0
 # neon
-neon-utils~=0.5
-ovos-plugin-manager~=0.0.2
+ovos-plugin-manager>=0.0.2
