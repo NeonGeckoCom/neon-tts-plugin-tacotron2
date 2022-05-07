@@ -27,38 +27,31 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from typing import Optional
-from neon_utils.configuration_utils import get_neon_tts_config
-from neon_utils.logger import LOG
-from neon_utils.parse_utils import format_speak_tags
 
-try:
-    from neon_audio.tts import TTS, TTSValidator
-except ImportError:
-    from ovos_plugin_manager.templates.tts import TTS, TTSValidator
-from neon_utils.metrics_utils import Stopwatch
-
-from tensorflow_tts.inference import TFAutoModel
-from tensorflow_tts.inference import AutoProcessor
 import soundfile as sf
+from ovos_plugin_manager.templates.tts import TTS, TTSValidator
+from ovos_utils.log import LOG
+from ovos_utils.metrics import Stopwatch
+from tensorflow_tts.inference import AutoProcessor
+from tensorflow_tts.inference import TFAutoModel
 
 
 class Tacotron2TTS(TTS):
     langs = {
         "en-us": {
-            "mel": "tensorspeech/tts-tacotron2-ljspeech-en", 
+            "mel": "tensorspeech/tts-tacotron2-ljspeech-en",
             "vocoder": "tensorspeech/tts-mb_melgan-ljspeech-en"
         },
         "pl-pl": {
-            "mel": "NeonBohdan/tts-tacotron2-ljspeech-pl", 
+            "mel": "NeonBohdan/tts-tacotron2-ljspeech-pl",
             "vocoder": "tensorspeech/tts-mb_melgan-ljspeech-en"
         }
     }
 
     def __init__(self, lang="en-us", config=None):
-        config = config or get_neon_tts_config().get("tacotron2", {})
         super(Tacotron2TTS, self).__init__(lang, config, Tacotron2TTSValidator(self),
-                                          audio_ext="wav",
-                                          ssml_tags=["speak"])
+                                           audio_ext="wav",
+                                           ssml_tags=["speak"])
         self._init_model()
 
     def get_tts(self, sentence: str, output_file: str, speaker: Optional[dict] = None):
@@ -76,13 +69,10 @@ class Tacotron2TTS(TTS):
         # if request_lang.lower() == "zh-zh":
         #     request_lang = "cmn-cn"
 
-        to_speak = format_speak_tags(sentence)
-        LOG.debug(to_speak)
-        if to_speak:
-            with stopwatch:
-                self._run_model(sentence = sentence, output_file = output_file)
+        with stopwatch:
+            self._run_model(sentence=sentence, output_file=output_file)
 
-            LOG.debug(f"TTS Synthesis time={stopwatch.time}")
+        LOG.debug(f"TTS Synthesis time={stopwatch.time}")
 
         return output_file, None
 
@@ -102,7 +92,7 @@ class Tacotron2TTS(TTS):
 
     def _run_model(self, sentence: str, output_file: str):
         input_ids = self.text_processor.text_to_sequence(sentence)
-        
+
         decoder_output, mel_outputs, stop_token_prediction, alignment_history = self.model.inference(
             input_ids=[input_ids],
             input_lengths=[len(input_ids)],
@@ -116,14 +106,12 @@ class Tacotron2TTS(TTS):
         sf.write(output_file, audio, 22050, "PCM_16")
 
 
-
 class Tacotron2TTSValidator(TTSValidator):
     def __init__(self, tts):
         super(Tacotron2TTSValidator, self).__init__(tts)
 
     def validate_lang(self):
-        if (self.lang not in self.langs):
-            raise KeyError("Language isn't supported")
+        pass
 
     def validate_dependencies(self):
         # TODO: Optionally check dependencies or raise
